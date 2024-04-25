@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>To-Do List</title>
+  <link rel="stylesheet" href="style.css">
+  <!-- ReactJS and Babel CDN links -->
+  <script src="https://unpkg.com/react@17/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    // Task component
+    const Task = ({ text, onDelete }) => {
+      return (
+        <div className="task">
+          <span>{text}</span>
+          <button onClick={onDelete}>Delete</button>
+        </div>
+      );
+    };
+
+    // To-Do List component
+    class TodoList extends React.Component {
+      constructor(props) {
+        super(props);
+        this.state = {
+          tasks: [],
+          inputValue: ''
+        };
+      }
+
+      handleInputChange = (event) => {
+        this.setState({ inputValue: event.target.value });
+      };
+
+      handleAddTask = () => {
+        if (this.state.inputValue.trim() !== '') {
+          this.setState((prevState) => ({
+            tasks: [...prevState.tasks, prevState.inputValue],
+            inputValue: ''
+          }));
+        }
+      };
+
+      handleDeleteTask = (index) => {
+        this.setState((prevState) => ({
+          tasks: prevState.tasks.filter((_, i) => i !== index)
+        }));
+      };
+
+      render() {
+        return (
+          <div className="todo-list">
+            <input
+              type="text"
+              value={this.state.inputValue}
+              onChange={this.handleInputChange}
+            />
+            <button onClick={this.handleAddTask}>Add Task</button>
+            {this.state.tasks.map((task, index) => (
+              <Task
+                key={index}
+                text={task}
+                onDelete={() => this.handleDeleteTask(index)}
+              />
+            ))}
+          </div>
+        );
+      }
+    }
+
+    // Render the TodoList component
+    ReactDOM.render(
+      <TodoList />,
+      document.getElementById('root')
+    );
+  </script>
+</body>
+</html>
